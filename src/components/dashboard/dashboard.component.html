@@ -1,0 +1,65 @@
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+  <!-- Left and Middle Columns for Controls -->
+  <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Teaching States -->
+    <div class="flex flex-col gap-4">
+      <h2 class="text-xl font-semibold text-amber-400 border-b-2 border-slate-700 pb-2">教學模式 (States)</h2>
+      @for(state of teachingStates(); track state.id) {
+        <div 
+          (click)="onStateClick(state.id)"
+          [class]="'p-4 rounded-lg shadow-md cursor-pointer transition-all duration-300 ' + (state.isActive ? 'bg-amber-500/20 border-2 border-amber-500 ring-2 ring-amber-500/50' : 'bg-slate-800/50 border border-slate-700 hover:bg-slate-700/50')">
+          <div class="flex justify-between items-center">
+            <span class="font-medium text-lg">{{ state.name }}</span>
+            <div [class]="'font-mono text-xl ' + (state.isActive ? 'text-amber-300' : 'text-slate-400')">
+              {{ formatTime(state.elapsedSeconds) }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Teaching Actions -->
+    <div class="flex flex-col gap-4">
+      <h2 class="text-xl font-semibold text-amber-400 border-b-2 border-slate-700 pb-2">教學行為 (Actions)</h2>
+      @for(action of teachingActions(); track action.id) {
+        <div 
+          (mousedown)="onActionMouseDown(action.id)"
+          (mouseup)="onActionMouseUp(action.id)"
+          (mouseleave)="isPressing = false; clearTimeout(longPressTimer);"
+          [class]="'p-4 rounded-lg shadow-md cursor-pointer transition-all duration-300 ' + (action.isTiming ? 'bg-red-500/20 border-2 border-red-500 ring-2 ring-red-500/50' : 'bg-slate-800/50 border border-slate-700 hover:bg-slate-700/50')">
+          <div class="flex justify-between items-center">
+            <div class="flex flex-col">
+                <span class="font-medium text-lg">{{ action.name }}</span>
+                <span class="text-xs text-slate-400">點擊計次 / 長按計時</span>
+            </div>
+            <div class="text-right">
+              <div [class]="'font-mono text-lg ' + (action.isTiming ? 'text-red-400' : 'text-slate-400')">
+                計次: {{ action.count }}
+              </div>
+              <div [class]="'font-mono text-lg ' + (action.isTiming ? 'text-red-400' : 'text-slate-400')">
+                {{ formatTime(action.elapsedSeconds) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Right Column for Log Stream -->
+  <div class="lg:col-span-1 bg-slate-900/50 rounded-lg p-4 flex flex-col h-full max-h-[80vh] lg:max-h-full">
+    <h2 class="text-xl font-semibold text-amber-400 border-b-2 border-slate-700 pb-2 mb-4 shrink-0">即時紀錄流 (Log Stream)</h2>
+    <div class="overflow-y-auto flex-grow pr-2">
+      @for(entry of log(); track $index) {
+        <div class="mb-2.5 flex items-start gap-3">
+          <span class="font-mono text-xs text-slate-500 pt-1">{{ entry.timestamp | date:'HH:mm:ss' }}</span>
+          <p [class]="'text-sm leading-tight ' + (entry.type === 'session' ? 'text-amber-400 font-bold' : 'text-slate-300')">{{ entry.message }}</p>
+        </div>
+      }
+      @if (log().length === 0) {
+        <p class="text-slate-500 text-center mt-8">尚無紀錄...</p>
+      }
+    </div>
+  </div>
+</div>

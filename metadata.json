@@ -1,0 +1,5 @@
+{
+  "name": "Chronos 數位觀課儀表板",
+  "description": "一個專為中學教師設計的課堂觀察工具，整合了計時與行為紀錄功能。",
+  "requestFramePermissions": []
+}

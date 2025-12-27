@@ -1,0 +1,35 @@
+
+<div class="flex flex-col h-screen font-sans">
+  <app-header 
+    [isSessionActive]="isSessionActive()" 
+    (sessionToggle)="toggleSession($event)"
+    (subjectChange)="handleSubjectChange($event)">
+  </app-header>
+
+  <main class="flex-grow overflow-y-auto p-4 md:p-6 lg:p-8">
+    @if (isSessionActive()) {
+      <app-dashboard></app-dashboard>
+    } @else {
+      <div class="flex flex-col items-center justify-center h-full text-center">
+        <div class="max-w-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 mx-auto text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 6v6l4 2"></path></svg>
+          <h1 class="mt-6 text-3xl font-bold text-slate-300">Chronos 數位觀課儀表板</h1>
+          <p class="mt-4 text-slate-400">請選擇科目，然後點擊「開始」按鈕以啟動新的觀課紀錄。所有教學行為與模式將被即時記錄。</p>
+        </div>
+      </div>
+    }
+  </main>
+
+  <app-footer 
+    [isSessionActive]="isSessionActive()" 
+    [flash]="flashFooter()"
+    (activity)="onUserActivity()">
+  </app-footer>
+</div>
+
+@if (showSummaryModal()) {
+  <app-summary-modal 
+    [summaryData]="summaryData()"
+    (closeModal)="onCloseModal()">
+  </app-summary-modal>
+}

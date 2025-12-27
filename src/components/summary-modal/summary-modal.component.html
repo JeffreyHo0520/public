@@ -1,0 +1,71 @@
+
+<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" (click)="closeModal.emit()">
+  <div class="bg-slate-900 border border-slate-700 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 border-b border-slate-700 shrink-0">
+      <h2 class="text-xl font-bold text-amber-400">觀課總結報告</h2>
+      <button (click)="closeModal.emit()" class="text-slate-400 hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="p-6 overflow-y-auto space-y-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+        <div>
+          <h4 class="text-sm text-slate-400">科目</h4>
+          <p class="text-lg font-semibold">{{ summaryData().subject }}</p>
+        </div>
+        <div>
+          <h4 class="text-sm text-slate-400">開始時間</h4>
+          <p class="text-lg font-semibold">{{ summaryData().startTime | date:'HH:mm:ss' }}</p>
+        </div>
+        <div>
+          <h4 class="text-sm text-slate-400">總時長</h4>
+          <p class="text-lg font-semibold">{{ summaryData().totalDuration }}</p>
+        </div>
+      </div>
+      
+      <!-- Teaching States -->
+      <div>
+        <h3 class="font-semibold text-amber-500 mb-2">教學模式統計</h3>
+        <div class="bg-slate-800/50 p-3 rounded-md space-y-1">
+          @for(state of summaryData().states; track state.name) {
+            @if(state.elapsedSeconds > 0) {
+              <div class="flex justify-between text-sm">
+                <span>{{ state.name }}</span>
+                <span class="font-mono">{{ formatSeconds(state.elapsedSeconds) }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Teaching Actions -->
+      <div>
+        <h3 class="font-semibold text-amber-500 mb-2">教學行為統計</h3>
+        <div class="bg-slate-800/50 p-3 rounded-md space-y-1">
+          @for(action of summaryData().actions; track action.name) {
+            @if(action.count > 0 || action.elapsedSeconds > 0) {
+              <div class="flex justify-between text-sm">
+                <span>{{ action.name }}</span>
+                <span class="font-mono">計次: {{ action.count }}, 計時: {{ formatSeconds(action.elapsedSeconds) }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex items-center justify-end p-4 border-t border-slate-700 shrink-0 gap-3">
+      <button (click)="copyToClipboard()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-md font-semibold transition-colors">
+        {{ copyStatus() === 'idle' ? '複製紀錄' : '已複製!' }}
+      </button>
+      <button (click)="downloadTxt()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-md font-semibold transition-colors">
+        下載 TXT
+      </button>
+    </div>
+  </div>
+</div>
